@@ -3,8 +3,8 @@ from tkinter import ttk, messagebox
 import tkinter as tk
 import threading
 import pytube
+import sys
 import os
-
 
 DESKTOP = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 TITLE = "YouTube Downloader.."
@@ -22,10 +22,6 @@ class Application(tk.Tk):
 
         # Title
         self.title(TITLE)
-
-        # Favicon
-        # fav = tk.PhotoImage(file='download.png')
-        # self.iconphoto(True, fav)
 
         # Grid settings
         self.columnconfigure(0, weight=3)
@@ -48,8 +44,14 @@ class Application(tk.Tk):
         button.grid(row=3, column=0, columnspan=2, pady=25)
 
         self.list_current_widgets = self.winfo_children()
+        self.protocol("WM_DELETE_WINDOW", self._on_close)
 
     # ============================== Functions ==========================
+    def _on_close(self):
+        if tk.messagebox.askokcancel("Quit", "Do you really wish to quit?"):
+            self.quit()
+            self.destroy()
+
     def calculate_center_of_the_screen(self, w, h):
         x = int(self.winfo_screenwidth() / 2 - w / 2)
         y = int(self.winfo_screenheight() / 3 - h / 2)
@@ -76,7 +78,7 @@ class Application(tk.Tk):
 
         try:
             file_type = self.combo.get()
-            self.geometry(self.calculate_center_of_the_screen(WIDTH, HEIGHT+50))
+            self.geometry(self.calculate_center_of_the_screen(WIDTH, HEIGHT + 50))
 
             if "playlist" in url:
                 playlist = pytube.Playlist(url)
